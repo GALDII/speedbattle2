@@ -6,7 +6,6 @@ export default function TypingGame({ onResult }) {
   const [words]        = useState(() => getRandomWords(10));
   const [wordIndex, setWordIndex]   = useState(0);
   const [currentInput, setCurrentInput] = useState('');
-  const [errors, setErrors]         = useState(0);
   const [started, setStarted]       = useState(false);
   const [done, setDone]             = useState(false);
   const [elapsed, setElapsed]       = useState(0);
@@ -49,7 +48,6 @@ export default function TypingGame({ onResult }) {
       const correct = typed === words[wordIndexRef.current];
       if (!correct) {
         errorsRef.current += 1;
-        setErrors(errorsRef.current);
       }
       const newIndex = wordIndexRef.current + 1;
       wordIndexRef.current = newIndex;
