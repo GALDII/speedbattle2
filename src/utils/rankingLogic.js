@@ -1,4 +1,4 @@
-export function getReactionRank(ms){if(ms<180)return{label:'NINJA REFLEX',emoji:'🥷',color:'#22c55e'};if(ms<220)return{label:'PRO GAMER',emoji:'🎮',color:'#facc15'};if(ms<280)return{label:'FAST HUMAN',emoji:'⚡',color:'#f97316'};return{label:'SLOW INTERNET',emoji:'🐢',color:'#ef4444'};}
+export function getReactionRank(ms){if(ms<180)return{label:'NINJA REFLEX',emoji:'🥷',color:'#22c55e'};if(ms<220)return{label:'PRO GAMER',emoji:'🎮',color:'#facc15'};if(ms<280)return{label:'FAST HUMAN',emoji:'⚡',color:'#f97316'};return{label:'TOO SLOW',emoji:'🐢',color:'#ef4444'};}
 export function getReactionPercentile(ms){if(ms<180)return 96;if(ms<200)return 82;if(ms<220)return 65;if(ms<250)return 48;if(ms<280)return 32;return 18;}
 export function getTypingRank(wpm){if(wpm>=100)return{label:'KEYBOARD HACKER',emoji:'💻',color:'#22c55e'};if(wpm>=80)return{label:'PRO TYPIST',emoji:'🔥',color:'#facc15'};if(wpm>=60)return{label:'FAST FINGERS',emoji:'⚡',color:'#f97316'};return{label:'BEGINNER',emoji:'🌱',color:'#3b82f6'};}
 export function getTypingPercentile(wpm){if(wpm>=100)return 95;if(wpm>=80)return 80;if(wpm>=60)return 60;if(wpm>=40)return 40;return 20;}
