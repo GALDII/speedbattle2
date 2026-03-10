@@ -25,7 +25,6 @@ const AD_CONFIG = {
 // ──────────────────────────────────────────────────────────────
 
 const IS_PROD = process.env.REACT_APP_ENV === 'production';
-const ZEYDOO_SMARTLINK = 'https://lakns.com/link?z=10710139&var=speedbattle&ymid=1';  
 // ── Slot assignment: which network handles which slot ──────────
 // banner → AdSense   (top of every page)
 // mid    → Adsterra  (between game and results)
@@ -73,8 +72,9 @@ function AdsterraUnit({ scriptSrc }) {
     script.setAttribute('data-cfasync', 'false');
     ref.current.appendChild(script);
 
+    const element = ref.current;
     return () => {
-      if (ref.current) ref.current.innerHTML = '';
+      if (element) element.innerHTML = '';
     };
   }, [scriptSrc]);
 
@@ -104,8 +104,9 @@ function PropellerUnit({ zoneId }) {
     `;
     ref.current.appendChild(script);
 
+    const element = ref.current;
     return () => {
-      if (ref.current) ref.current.innerHTML = '';
+      if (element) element.innerHTML = '';
     };
   }, [zoneId]);
 
