@@ -17,18 +17,23 @@ const AD_CONFIG = {
   bottom: '//pl28890016.effectivegatecpm.com/21f569c24724fe31451b5d45f16d243b/invoke.js',
 },
   propellerads: {
-    banner: 'YOUR_ZONE_ID_1',   // ← Replace with PropellerAds zone IDs
+    banner: '10710139',         // PropellerAds zone IDs
     mid:    '10710324',
     bottom: '10710320',
+  },
+  monetag: {
+    zoneId: '10709979',         // Monetag zone ID
+    domain: '5gvci.com',
   },
 };
 // ──────────────────────────────────────────────────────────────
 
 const IS_PROD = process.env.REACT_APP_ENV === 'production';
 // ── Slot assignment: which network handles which slot ──────────
-// banner → AdSense   (top of every page)
-// mid    → Adsterra  (between game and results)
-// bottom → PropellerAds (footer of result pages)
+// banner → AdSense       (top of every page)
+// mid    → Adsterra      (between game and results)
+// bottom → PropellerAds  (footer of result pages)
+// Monetag is always active in background via service worker
 const SLOT_NETWORK = {
   banner: 'adsense',
   mid:    'adsterra',
@@ -173,3 +178,7 @@ export default function AdSlot({ size = 'banner' }) {
 
   return <Placeholder size={size} />;
 }
+
+// ── Monetag Integration ───────────────────────────────────────
+// Monetag is integrated via service worker (sw.js) for background popunder ads
+// Zone ID: 10709979 | Domain: 5gvci.com

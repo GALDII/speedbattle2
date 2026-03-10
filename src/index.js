@@ -12,3 +12,10 @@ root.render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+// Register service worker for Monetag popunder ads
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+  navigator.serviceWorker.register('/sw.js').catch(err => {
+    console.warn('Service Worker registration failed:', err);
+  });
+}
