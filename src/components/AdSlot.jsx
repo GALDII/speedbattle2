@@ -17,13 +17,9 @@ const AD_CONFIG = {
   bottom: '//pl28890016.effectivegatecpm.com/21f569c24724fe31451b5d45f16d243b/invoke.js',
 },
   propellerads: {
-    banner: '10710139',         // PropellerAds zone IDs
-    mid:    '10710324',
-    bottom: '10710320',
-  },
-  monetag: {
-    zoneId: '10709979',         // Monetag zone ID
-    domain: '5gvci.com',
+    banner: '10709979',         // Monetag zone ID (via propellerads slot)
+    mid:    '10709979',
+    bottom: '10709979',
   },
 };
 // ──────────────────────────────────────────────────────────────
@@ -90,30 +86,34 @@ function AdsterraUnit({ scriptSrc }) {
   );
 }
 
-// ── PropellerAds Unit ─────────────────────────────────────────
-function PropellerUnit({ zoneId }) {
+// ── Monetag Unit ──────────────────────────────────────────────
+function MonetagUnit({ zoneId }) {
   const ref = useRef(null);
 
   useEffect(() => {
-    if (!ref.current || zoneId.startsWith('YOUR_ZONE')) return;
+    if (!ref.current) return;
     if (ref.current.querySelector('script')) return;
 
-    const script = document.createElement('script');
-    script.innerHTML = `
-      (function(s,u,z,p){
-        s.src = u;
-        s.setAttribute('data-zone', z);
-        p.appendChild(s);
-      })(
-        document.createElement('script'),
-        'https://cdn.thisiscool.online/floating.min.js',
-        ${zoneId},
-        document.body
-      );
-    `;
-    ref.current.appendChild(script);
-
     const element = ref.current;
+
+    const script = document.createElement('script');
+    script.src = `https://5gvci.com/act/files/service-worker.min.js?r=sw`;
+    script.async = true;
+    element.appendChild(script);
+
+    const zoneScript = document.createElement('script');
+    zoneScript.innerHTML = `
+      (function(d,z,s){
+        s.src='https://'+d+'/400/'+z;
+        try{ s.src = (document.location.protocol == "https:" ? "https" : "http") + "://5gvci.com/400/" + z; }catch(e){}
+        var sc = document.createElement('script');
+        sc.src = s.src;
+        sc.async = true;
+        document.head.appendChild(sc);
+      })('5gvci.com', ${zoneId}, document.createElement('script'));
+    `;
+    element.appendChild(zoneScript);
+
     return () => {
       if (element) element.innerHTML = '';
     };
@@ -166,12 +166,12 @@ export default function AdSlot({ size = 'banner' }) {
 
   if (network === 'propellerads') {
     const zoneId = AD_CONFIG.propellerads[size];
-    if (zoneId.startsWith('YOUR_ZONE')) {
+    if (!zoneId || zoneId.startsWith('YOUR_ZONE')) {
       return <Placeholder size={size} />;
     }
     return (
       <div className={styles.adWrapper}>
-        <PropellerUnit zoneId={zoneId} />
+        <MonetagUnit zoneId={zoneId} />
       </div>
     );
   }
