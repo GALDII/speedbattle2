@@ -6,20 +6,20 @@ const AD_CONFIG = {
   adsense: {
     publisherId: 'ca-pub-5890583628637719',   // ← Replace with your AdSense Publisher ID
     slots: {
-      banner: '1111111111',                   // ← Replace with your AdSense slot IDs
-      mid:    '2222222222',
-      bottom: '3333333333',
+      banner: '5274180112',                   // ← Replace with your AdSense slot IDs
+      mid:    '8554949577',
+      bottom: '9022183004',
     },
   },
   adsterra: {
-    banner: '//www.highperformanceformat.com/AAAAAAAAAAAAAAAAAAAA/invoke.js', // ← Replace
-    mid:    '//www.highperformanceformat.com/BBBBBBBBBBBBBBBBBBBB/invoke.js', // ← Replace
-    bottom: '//www.highperformanceformat.com/CCCCCCCCCCCCCCCCCCCC/invoke.js', // ← Replace
-  },
+  banner: '//pl28890016.effectivegatecpm.com/21f569c24724fe31451b5d45f16d243b/invoke.js',
+  mid:    '//pl28890016.effectivegatecpm.com/21f569c24724fe31451b5d45f16d243b/invoke.js',
+  bottom: '//pl28890016.effectivegatecpm.com/21f569c24724fe31451b5d45f16d243b/invoke.js',
+},
   propellerads: {
     banner: 'YOUR_ZONE_ID_1',   // ← Replace with PropellerAds zone IDs
-    mid:    'YOUR_ZONE_ID_2',
-    bottom: 'YOUR_ZONE_ID_3',
+    mid:    '10710324',
+    bottom: '10710320',
   },
 };
 // ──────────────────────────────────────────────────────────────
@@ -60,14 +60,14 @@ function AdSenseUnit({ slotId }) {
 // ── Adsterra Unit ─────────────────────────────────────────────
 function AdsterraUnit({ scriptSrc }) {
   const ref = useRef(null);
+  const containerId = scriptSrc.split('/').pop().replace('/invoke.js', '');
 
   useEffect(() => {
-    if (!ref.current || !scriptSrc.includes('highperformanceformat')) return;
-    // Prevent duplicate injection
+    if (!ref.current) return;
     if (ref.current.querySelector('script')) return;
 
     const script = document.createElement('script');
-    script.src = scriptSrc;
+    script.src = `https:${scriptSrc}`;
     script.async = true;
     script.setAttribute('data-cfasync', 'false');
     ref.current.appendChild(script);
@@ -78,7 +78,11 @@ function AdsterraUnit({ scriptSrc }) {
     };
   }, [scriptSrc]);
 
-  return <div ref={ref} style={{ width: '100%', minHeight: 50 }} />;
+  return (
+    <div ref={ref} style={{ width: '100%', minHeight: 50 }}>
+      <div id={`container-${containerId}`} />
+    </div>
+  );
 }
 
 // ── PropellerAds Unit ─────────────────────────────────────────
@@ -145,7 +149,7 @@ export default function AdSlot({ size = 'banner' }) {
 
   if (network === 'adsterra') {
     const src = AD_CONFIG.adsterra[size];
-    if (!src.includes('highperformanceformat')) {
+    if (!src.includes('effectivegatecpm')) {
       return <Placeholder size={size} />;
     }
     return (
