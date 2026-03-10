@@ -1,0 +1,2 @@
+export const WORD_POOL = ['speed','battle','quick','tap','viral','challenge','reflex','fast','typing','games','ninja','pro','gamer','keyboard','warrior','flash','rapid','swift','sharp','skill','mind','focus','burst','flow','pixel','grind','test','level','score','blast','ace','rush','hype','bold','zone','fire','peak','epic','wild','snap','react','click','press','move','beat','pulse','track','time'];
+export function getRandomWords(count=10){return[...WORD_POOL].sort(()=>Math.random()-0.5).slice(0,count);}

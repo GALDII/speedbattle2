@@ -1,0 +1,52 @@
+.card {
+  background: linear-gradient(135deg, #150f00 0%, var(--surface) 100%);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-xl);
+  padding: 28px 22px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 14px;
+  animation: scaleIn 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.glowOrb {
+  position: absolute;
+  top: -50px; right: -50px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(250,204,21,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.sectionLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.score {
+  font-family: var(--font-display);
+  font-size: 80px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  line-height: 1;
+}
+.unit {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.rank {
+  display: inline-block;
+  background: var(--accent-dim);
+  border: 1px solid;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  padding: 7px 18px;
+  border-radius: 100px;
+  margin: 14px 0 8px;
+  text-transform: uppercase;
+}
+.extra { font-size: 13px; color: var(--muted); }

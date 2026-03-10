@@ -1,0 +1,22 @@
+.page { padding:14px; padding-bottom:90px; animation:fadeInUp 0.3s ease; }
+.statsRow { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:20px; }
+.statPill { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 8px; text-align:center; }
+.val  { font-family:var(--font-mono); font-size:17px; color:var(--accent); font-weight:700; }
+.lbl  { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em; margin-top:3px; font-family:var(--font-mono); }
+.sectionLabel { font-family:var(--font-mono); font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.gameGrid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.gameCard { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px 16px; cursor:pointer; transition:border-color var(--transition),transform var(--transition); position:relative; overflow:hidden; user-select:none; }
+.gameCard::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,transparent 60%,rgba(250,204,21,0.05)); pointer-events:none; }
+.gameCard:active { transform:scale(0.96); border-color:var(--accent); }
+.cardIcon  { font-size:32px; display:block; margin-bottom:10px; }
+.cardTitle { font-size:14px; font-weight:600; margin-bottom:4px; }
+.cardDesc  { font-size:11px; color:var(--muted); line-height:1.4; }
+.cardBadge { display:inline-block; background:var(--accent-dim); color:var(--accent); font-size:9px; padding:3px 9px; border-radius:100px; margin-top:10px; font-family:var(--font-mono); letter-spacing:0.1em; }
+.lbBtn { width:100%; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px 16px; cursor:pointer; display:flex; align-items:center; justify-content:space-between; transition:border-color var(--transition); color:var(--text); font-size:14px; font-weight:500; margin-bottom:14px; }
+.lbBtn:active { border-color:var(--accent); }
+.arrow { color:var(--accent); font-size:22px; }
+.howTo { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; margin-bottom:14px; }
+.step { display:flex; align-items:flex-start; gap:12px; margin-bottom:10px; }
+.step:last-child { margin-bottom:0; }
+.stepNum { width:24px; height:24px; border-radius:50%; background:var(--accent-dim); border:1px solid var(--accent-border); color:var(--accent); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.stepText { font-size:13px; color:var(--muted); line-height:1.5; padding-top:3px; }

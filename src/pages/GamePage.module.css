@@ -1,0 +1,15 @@
+.page { padding:14px; padding-bottom:90px; animation:fadeInUp 0.3s ease; }
+.back { display:flex; align-items:center; gap:6px; color:var(--muted); font-size:13px; padding:0; margin-bottom:14px; background:none; border:none; cursor:pointer; }
+.back:hover { color:var(--text); }
+.title { font-family:var(--font-display); font-size:34px; letter-spacing:2px; margin-bottom:4px; }
+.sub   { font-size:13px; color:var(--muted); margin-bottom:16px; }
+.submitBox { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:16px; margin-bottom:12px; }
+.label { font-family:var(--font-mono); font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+.nameInput { width:100%; background:var(--surface2); border:2px solid var(--border); border-radius:var(--radius-md); padding:12px 14px; color:var(--text); font-size:15px; outline:none; margin-bottom:10px; transition:border-color var(--transition); -webkit-appearance:none; }
+.nameInput:focus { border-color:var(--accent); }
+.nameInput::placeholder { color:var(--muted); }
+.btnPrimary { width:100%; padding:14px; border-radius:var(--radius-md); background:var(--accent); color:#000; font-size:15px; font-weight:600; transition:transform var(--transition),background var(--transition); }
+.btnPrimary:active { transform:scale(0.97); background:#eab308; }
+.chipRow { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+.chip { background:var(--surface2); border:1px solid var(--border); border-radius:100px; padding:6px 14px; font-size:12px; color:var(--muted); cursor:pointer; transition:all var(--transition); }
+.chip:active { border-color:var(--accent); color:var(--accent); }

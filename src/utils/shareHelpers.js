@@ -1,0 +1,4 @@
+export function copyToClipboard(text){if(navigator.clipboard)return navigator.clipboard.writeText(text);const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);return Promise.resolve();}
+export function buildReactionShareText(ms,rank){return `I got ${ms}ms reaction speed ${rank.emoji}\nRank: ${rank.label}\nCan you beat me?\nPlay here: speedbattle.fun`;}
+export function buildTypingShareText(wpm,acc,rank){return `I typed ${wpm} WPM with ${acc}% accuracy ${rank.emoji}\nRank: ${rank.label}\nCan you beat me?\nPlay here: speedbattle.fun`;}
+export function downloadResultCard(canvas,filename){const link=document.createElement('a');link.download=filename;link.href=canvas.toDataURL('image/png');link.click();}

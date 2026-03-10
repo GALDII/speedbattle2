@@ -1,0 +1,17 @@
+.adSlot {
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+  margin: 0 16px;
+}
+.banner { height: 60px; }
+.mid    { height: 80px; margin: 14px 16px; }
+.bottom { height: 60px; margin: 14px 16px 0; }

@@ -1,0 +1,33 @@
+.nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(10,10,10,0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  z-index: 100;
+}
+.item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 4px 0;
+  transition: transform var(--transition);
+  color: var(--muted);
+}
+.item:active { transform: scale(0.9); }
+.icon { font-size: 20px; }
+.label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: color var(--transition);
+  font-family: var(--font-mono);
+}
+.active .label { color: var(--accent); }
+.active .icon  { filter: drop-shadow(0 0 6px rgba(250,204,21,0.7)); }

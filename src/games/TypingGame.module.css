@@ -1,0 +1,19 @@
+.timerBarWrap { background:var(--surface); border-radius:100px; height:5px; margin-bottom:14px; overflow:hidden; }
+.timerBar     { height:100%; background:var(--accent); border-radius:100px; transition:width 0.1s linear; }
+.statsLive { display:flex; gap:10px; margin-bottom:14px; }
+.statLive  { flex:1; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px; text-align:center; }
+.statVal   { font-family:var(--font-mono); font-size:22px; color:var(--accent); font-weight:700; }
+.statLbl   { font-size:9px; color:var(--muted); text-transform:uppercase; letter-spacing:0.12em; font-family:var(--font-mono); margin-top:2px; }
+.wordDisplay { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px; font-family:var(--font-mono); font-size:18px; line-height:2; letter-spacing:0.04em; min-height:110px; margin-bottom:14px; }
+.word       { transition:color 0.1s; }
+.pending    { color:var(--muted); }
+.correct    { color:var(--green); }
+.wrong      { color:var(--red); }
+.current    { color:var(--accent); }
+.typed      { color:var(--green); }
+.typedWrong { color:var(--red); }
+.input { width:100%; background:var(--surface2); border:2px solid var(--border); border-radius:var(--radius-md); padding:14px 16px; color:var(--text); font-family:var(--font-mono); font-size:16px; outline:none; transition:border-color var(--transition); -webkit-appearance:none; }
+.input:focus { border-color:var(--accent); }
+.input::placeholder { color:var(--muted); }
+.startBtn { width:100%; padding:14px; border-radius:var(--radius-md); background:var(--surface2); color:var(--text); border:1px solid var(--border); font-size:15px; font-weight:600; margin-top:10px; transition:border-color var(--transition); }
+.startBtn:active { border-color:var(--accent); }
