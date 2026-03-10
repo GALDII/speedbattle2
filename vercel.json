@@ -1,11 +1,11 @@
 {
-  "buildCommand": "npm run build",
-  "devCommand": "npm start",
-  "installCommand": "npm install",
+  "buildCommand": "yarn build",
+  "devCommand": "yarn start",
+  "installCommand": "yarn install",
   "framework": "react",
   "env": {
-    "REACT_APP_SUPABASE_URL": "@react_app_supabase_url",
-    "REACT_APP_SUPABASE_ANON_KEY": "@react_app_supabase_anon_key",
+    "REACT_APP_SUPABASE_URL": "https://idpcnkgizflvmqljdsmh.supabase.co",
+    "REACT_APP_SUPABASE_ANON_KEY": "@eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlkcGNua2dpemZsdm1xbGpkc21oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNTU3ODksImV4cCI6MjA4ODczMTc4OX0.kNEpuMYe-6ljqBk2N2z3degdS3si3FVZQC9d_mO0tmE",
     "REACT_APP_ENV": "production"
   }
 }
