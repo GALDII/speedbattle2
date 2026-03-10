@@ -34,12 +34,16 @@ export default function TypingResult({ result, onSubmit, showToast }) {
 
   if (!result) { navigate('/typing'); return null; }
 
-  const handleSubmit = () => {
-    const name = nameRef.current?.value.trim() || 'Anonymous';
-    const pos  = onSubmit('typing', name, wpm);
-    if (nameRef.current) nameRef.current.value = '';
-    showToast(pos < 10 ? `🎉 You're #${pos + 1} on the leaderboard!` : '🏆 Score submitted!');
-  };
+  const handleSubmit = async () => {
+  const name = nameRef.current?.value.trim() || 'Anonymous';
+  // Pass accuracy as extra field
+  const pos  = await onSubmit('typing', name, wpm, { accuracy: acc });
+  if (nameRef.current) nameRef.current.value = '';
+  showToast(pos !== -1 && pos < 10
+    ? `🎉 You're #${pos + 1} on the leaderboard!`
+    : '🏆 Score submitted!'
+  );
+};
 
   return (
     <div className={styles.page}>

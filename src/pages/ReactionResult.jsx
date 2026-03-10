@@ -31,12 +31,15 @@ export default function ReactionResult({ score, onSubmit, showToast }) {
 
   if (score === null) { navigate('/reaction'); return null; }
 
-  const handleSubmit = () => {
-    const name = nameRef.current?.value.trim() || 'Anonymous';
-    const pos  = onSubmit('reaction', name, score);
-    if (nameRef.current) nameRef.current.value = '';
-    showToast(pos < 10 ? `🎉 You're #${pos + 1} on the leaderboard!` : '🏆 Score submitted!');
-  };
+  const handleSubmit = async () => {
+  const name = nameRef.current?.value.trim() || 'Anonymous';
+  const pos  = await onSubmit('reaction', name, score);
+  if (nameRef.current) nameRef.current.value = '';
+  showToast(pos !== -1 && pos < 10
+    ? `🎉 You're #${pos + 1} on the leaderboard!`
+    : '🏆 Score submitted!'
+  );
+};
 
   return (
     <div className={styles.page}>
