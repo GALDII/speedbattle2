@@ -1,11 +1,16 @@
+/* Ad wrapper — full width, no side margins on mobile */
 .adWrapper {
-  margin: 0 16px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
+/* Dev placeholder */
 .adSlot {
   background: var(--surface);
   border: 1px dashed var(--border);
@@ -18,17 +23,38 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-family: var(--font-mono);
-  margin: 0 16px;
+  width: 100%;
 }
 
+/* Banner — below header, sticky feel */
 .banner {
   height: 60px;
+  min-height: 50px;
 }
+
+/* Mid — between game and page bottom, more room for rectangle ads */
 .mid {
-  height: 80px;
-  margin: 14px 16px;
+  min-height: 90px;
+  margin: 12px 0;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border);
 }
+
+/* Bottom — result pages footer */
 .bottom {
-  height: 60px;
-  margin: 14px 16px 0;
+  min-height: 60px;
+  margin: 16px 0 8px;
+}
+
+/* On larger screens give ads proper max-width */
+@media (min-width: 600px) {
+  .adWrapper {
+    max-width: 728px;
+    margin: 0 auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+  }
+  .banner { height: 90px; }
+  .mid    { min-height: 250px; }
+  .bottom { min-height: 90px; }
 }

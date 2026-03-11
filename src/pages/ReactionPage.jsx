@@ -17,8 +17,8 @@ export default function ReactionPage({ onResult }) {
       <button className={styles.back} onClick={() => navigate('/')}>← Back</button>
       <div className={styles.title}>Reaction Test</div>
       <div className={styles.sub}>Tap the arena the INSTANT it turns green</div>
-      <ReactionGame onResult={handleResult} />
       <AdSlot size="mid" />
+      <ReactionGame onResult={handleResult} />
     </div>
   );
 }

@@ -33,7 +33,6 @@ export default function App() {
     <>
       <Header />
       <AdSlot size="banner" />
-
       <Routes>
         <Route path="/" element={<Home stats={stats} />} />
 

@@ -41,24 +41,44 @@ export default function TypingGame({ onResult }) {
   };
 
   const handleInput = (e) => {
-    if (!started || done) return;
+    if (done) return;
     const val = e.target.value;
-    if (val.endsWith(' ')) {
+
+    // Auto-start on first keystroke
+    if (!started && val.length > 0) {
+      setStarted(true);
+      startTimeRef.current = performance.now();
+      timerRef.current = setInterval(() => {
+        const elapsed = Math.round(performance.now() - startTimeRef.current);
+        setElapsed(elapsed);
+        const secs = elapsed / 1000;
+        setLiveWpm(secs > 0 ? Math.round((wordIndexRef.current / secs) * 60) : 0);
+      }, 100);
+    }
+
+    const isLastWord = wordIndexRef.current === words.length - 1;
+
+    if (val.endsWith(' ') && !isLastWord) {
+      // Space advances to next word (not on last word)
       const typed   = val.trim();
       const correct = typed === words[wordIndexRef.current];
-      if (!correct) {
-        errorsRef.current += 1;
-      }
+      if (!correct) errorsRef.current += 1;
       const newIndex = wordIndexRef.current + 1;
       wordIndexRef.current = newIndex;
       setWordIndex(newIndex);
       setCurrentInput('');
       setLiveAcc(Math.max(0, Math.round(((newIndex - errorsRef.current) / Math.max(newIndex, 1)) * 100)));
-      if (newIndex >= words.length) {
-        setDone(true);
-        const finalElapsed = Math.round(performance.now() - startTimeRef.current);
-        finish(newIndex, errorsRef.current, finalElapsed);
-      }
+    } else if (isLastWord && val === words[wordIndexRef.current]) {
+      // Last word: finish immediately when typed correctly (exact match, no trailing space needed)
+      const correct = true;
+      if (!correct) errorsRef.current += 1;
+      const newIndex = wordIndexRef.current + 1;
+      wordIndexRef.current = newIndex;
+      setWordIndex(newIndex);
+      setCurrentInput(val);
+      setDone(true);
+      const finalElapsed = Math.round(performance.now() - startTimeRef.current);
+      finish(newIndex, errorsRef.current, finalElapsed);
     } else {
       setCurrentInput(val);
     }
@@ -107,18 +127,14 @@ export default function TypingGame({ onResult }) {
         type="text"
         value={currentInput}
         onChange={handleInput}
-        onKeyDown={e => e.key === 'Enter' && !started && startGame()}
-        placeholder={started ? '' : 'Start typing here...'}
+        placeholder={started ? '' : 'Start typing to begin...'}
         disabled={done}
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"
         spellCheck="false"
+        autoFocus
       />
-
-      {!started && (
-        <button className={styles.startBtn} onClick={startGame}>▶ &nbsp; Start Game</button>
-      )}
     </div>
   );
 }

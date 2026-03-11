@@ -26,17 +26,16 @@ const AD_CONFIG = {
 
 const IS_PROD = process.env.REACT_APP_ENV === 'production';
 
-// banner → AdSense   (top of every page)
-// mid    → Adsterra  (between game and results)
-// bottom → Monetag   (footer / result pages)
+// banner → AdSense   (below header, every page)
+// mid    → Adsterra  (below game area, during play)
+// bottom → Monetag   (bottom of result pages)
 const SLOT_NETWORK = {
   banner: 'adsense',
   mid:    'adsterra',
   bottom: 'monetag',
 };
 
-// ── Register Monetag service worker once at app level ─────────
-// Handles popunder ads in the background — must NOT be loaded inside a component
+// ── Register Monetag service worker once ──────────────────────
 if (IS_PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
@@ -83,20 +82,19 @@ function AdsterraUnit({ scriptSrc }) {
     script.setAttribute('data-cfasync', 'false');
     element.appendChild(script);
 
-    return () => {
-      if (element) element.innerHTML = '';
-    };
+    return () => { if (element) element.innerHTML = ''; };
   }, [scriptSrc]);
 
   return (
-    <div ref={ref} style={{ width: '100%', minHeight: 50 }}>
+    <div ref={ref} style={{ width: '100%' }}>
       <div id={`container-${containerId}`} />
     </div>
   );
 }
 
-// ── Monetag Banner Unit ───────────────────────────────────────
-// Loads Monetag display ad — service worker (popunder) is registered separately above
+// ── Monetag Unit ──────────────────────────────────────────────
+// Uses Monetag's direct tag format — get your exact script URL from
+// publishers.monetag.com → Sites → your zone → Get Tag
 function MonetagUnit({ zoneId }) {
   const ref = useRef(null);
 
@@ -105,18 +103,19 @@ function MonetagUnit({ zoneId }) {
     if (!element) return;
     if (element.querySelector('script')) return;
 
+    // Monetag tag script — format: //{pub-domain}/400/{zoneId}
+    // Replace 'YOUR_MONETAG_CDN' with the domain from your Monetag tag
     const script = document.createElement('script');
-    script.src = `https://whephouggo.net/400/${zoneId}`;
     script.async = true;
     script.setAttribute('data-cfasync', 'false');
+    // ↓ Get this URL from your Monetag dashboard "Get Tag" button
+    script.src = `//monetag.com/banner/${zoneId}`;
     element.appendChild(script);
 
-    return () => {
-      if (element) element.innerHTML = '';
-    };
+    return () => { if (element) element.innerHTML = ''; };
   }, [zoneId]);
 
-  return <div ref={ref} style={{ width: '100%', minHeight: 50 }} />;
+  return <div ref={ref} style={{ width: '100%', minHeight: 60 }} />;
 }
 
 // ── Placeholder (dev / unconfigured) ─────────────────────────
@@ -146,9 +145,7 @@ export default function AdSlot({ size = 'banner' }) {
 
   if (network === 'adsterra') {
     const src = AD_CONFIG.adsterra[size];
-    if (!src.includes('effectivegatecpm')) {
-      return <Placeholder size={size} />;
-    }
+    if (!src.includes('effectivegatecpm')) return <Placeholder size={size} />;
     return (
       <div className={styles.adWrapper}>
         <AdsterraUnit scriptSrc={src} />

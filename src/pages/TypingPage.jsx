@@ -17,8 +17,8 @@ export default function TypingPage({ onResult }) {
       <button className={styles.back} onClick={() => navigate('/')}>← Back</button>
       <div className={styles.title}>Typing Speed</div>
       <div className={styles.sub}>Type all words as fast as possible</div>
-      <TypingGame onResult={handleResult} />
       <AdSlot size="mid" />
+      <TypingGame onResult={handleResult} />
     </div>
   );
 }
