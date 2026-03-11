@@ -1,26 +1,30 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ResultCard from '../components/ResultCard';
-import ShareBox from '../components/ShareBox';
 import Confetti from '../components/Confetti';
 import AdSlot from '../components/AdSlot';
+import ScoreModal from '../components/ScoreModal';
 import { getReactionRank, getReactionPercentile } from '../utils/rankingLogic';
-import { buildReactionShareText, copyToClipboard, downloadResultCard } from '../utils/shareHelpers';
+import { downloadResultCard } from '../utils/shareHelpers';
 import { drawReactionCard } from '../utils/canvasCard';
 import styles from './GamePage.module.css';
 
 export default function ReactionResult({ score, onSubmit, showToast }) {
-  const navigate  = useNavigate();
-  const canvasRef = useRef(null);
-  const nameRef   = useRef(null);
+  const navigate   = useNavigate();
+  const canvasRef  = useRef(null);
+  const [modalOpen, setModalOpen] = useState(true);
 
   const rank       = score !== null ? getReactionRank(score) : null;
   const percentile = score !== null ? getReactionPercentile(score) : 0;
-  const shareText  = score !== null ? buildReactionShareText(score, rank) : '';
 
-  const handleCopy = useCallback(() => {
-    copyToClipboard(shareText).then(() => showToast('📋 Copied to clipboard!'));
-  }, [shareText, showToast]);
+  const handleModalSubmit = async (playerName) => {
+    const pos = await onSubmit('reaction', playerName, score);
+    showToast(pos !== -1 && pos < 10
+      ? `🎉 You're #${pos + 1} on the leaderboard!`
+      : '🏆 Score submitted!'
+    );
+    return pos;
+  };
 
   const handleDownload = useCallback(() => {
     const canvas = canvasRef.current;
@@ -31,16 +35,6 @@ export default function ReactionResult({ score, onSubmit, showToast }) {
 
   if (score === null) { navigate('/reaction'); return null; }
 
-  const handleSubmit = async () => {
-  const name = nameRef.current?.value.trim() || 'Anonymous';
-  const pos  = await onSubmit('reaction', name, score);
-  if (nameRef.current) nameRef.current.value = '';
-  showToast(pos !== -1 && pos < 10
-    ? `🎉 You're #${pos + 1} on the leaderboard!`
-    : '🏆 Score submitted!'
-  );
-};
-
   return (
     <div className={styles.page}>
       <Confetti trigger={score < 220} />
@@ -48,22 +42,35 @@ export default function ReactionResult({ score, onSubmit, showToast }) {
 
       <button className={styles.back} onClick={() => navigate('/reaction')}>← Play Again</button>
 
-      <ResultCard score={score} unit="milliseconds" rank={rank} extra={`Faster than ${percentile}% of players`} />
-      <ShareBox shareText={shareText} onCopy={handleCopy} onDownload={handleDownload} />
+      <ResultCard
+        score={score}
+        unit="milliseconds"
+        rank={rank}
+        extra={`Faster than ${percentile}% of players`}
+      />
 
-      <div className={styles.submitBox}>
-        <div className={styles.label}>Save your score</div>
-        <input ref={nameRef} className={styles.nameInput} placeholder="Enter your name..." maxLength={20} />
-        <button className={styles.btnPrimary} onClick={handleSubmit}>🏆 Post to Leaderboard</button>
-      </div>
-
+      {/* Quick action chips */}
       <div className={styles.chipRow}>
+        <span className={styles.chip} onClick={() => setModalOpen(true)}>🔗 Share</span>
+        <span className={styles.chip} onClick={handleDownload}>⬇️ Save Card</span>
         <span className={styles.chip} onClick={() => navigate('/reaction')}>⚡ Try Again</span>
-        <span className={styles.chip} onClick={() => navigate('/typing')}>⌨️ Try Typing</span>
         <span className={styles.chip} onClick={() => navigate('/leaderboard')}>🏆 Scores</span>
       </div>
 
       <AdSlot size="bottom" />
+
+      <ScoreModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleModalSubmit}
+        showToast={showToast}
+        scoreData={{
+          type: 'reaction',
+          score,
+          rank,
+          percentile,
+        }}
+      />
     </div>
   );
 }
