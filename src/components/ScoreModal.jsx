@@ -27,7 +27,6 @@ export default function ScoreModal({ isOpen, onClose, onSubmit, scoreData, showT
     : `⌨️ I typed ${score} WPM with ${acc}% accuracy!\nRank: ${rank?.label} ${rank?.emoji}\nCan you beat me? 👉 ${SITE_URL}`;
 
   const encodedText = encodeURIComponent(shareText);
-  const encodedUrl  = encodeURIComponent(SITE_URL);
 
   const handleSubmit = async () => {
     const playerName = name.trim() || 'Anonymous';
