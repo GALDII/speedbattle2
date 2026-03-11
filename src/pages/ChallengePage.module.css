@@ -1,0 +1,127 @@
+/* PLACEMENT: src/pages/ChallengePage.module.css  (NEW FILE) */
+
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px 80px;
+  animation: fadeInUp 0.35s ease;
+}
+
+.loading {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.notFound {
+  text-align: center;
+}
+.nfEmoji {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+.nfTitle {
+  font-size: 18px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.banner {
+  width: 100%;
+  max-width: 400px;
+  background: linear-gradient(135deg, #150f00 0%, var(--surface) 100%);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-xl);
+  padding: 32px 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bannerEmoji {
+  font-size: 52px;
+  display: block;
+  margin-bottom: 8px;
+}
+.bannerName {
+  font-family: var(--font-display);
+  font-size: 36px;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+.bannerCta {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+.bannerScore {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.scoreNum {
+  font-family: var(--font-display);
+  font-size: 72px;
+  color: var(--accent);
+  line-height: 1;
+}
+.scoreUnit {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.rankBadge {
+  display: inline-block;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: 100px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.bannerSub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.btn {
+  width: 100%;
+  max-width: 400px;
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: #000;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  transition: transform 0.15s;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btnSecondary {
+  width: 100%;
+  max-width: 400px;
+  padding: 13px;
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  font-size: 14px;
+}

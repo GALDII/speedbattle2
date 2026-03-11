@@ -1,4 +1,9 @@
+// ─── ReactionGame.jsx ─────────────────────────────────────────
+// PLACEMENT: src/games/ReactionGame.jsx  (REPLACE existing)
+// Adds: sound on GO, too-early penalty sound, whoosh on result
+
 import React, { useState, useRef, useCallback } from 'react';
+import { useSound } from '../hooks/useSound';
 import styles from './ReactionGame.module.css';
 
 const CONFIGS = {
@@ -14,26 +19,30 @@ export default function ReactionGame({ onResult }) {
   const [attempts, setAttempts]   = useState([]);
   const timerRef = useRef(null);
   const startRef = useRef(null);
+  const { playGo, playTooEarly, playWhoosh } = useSound();
 
   const handleTap = useCallback(() => {
     if (gameState === 'idle' || gameState === 'done' || gameState === 'tooEarly') {
       setGameState('waiting');
-      const delay = 2000 + Math.random() * 2000;
+      const delay = 2000 + Math.random() * 3000;
       timerRef.current = setTimeout(() => {
         setGameState('go');
         startRef.current = performance.now();
+        playGo();
       }, delay);
     } else if (gameState === 'waiting') {
       clearTimeout(timerRef.current);
       setGameState('tooEarly');
+      playTooEarly();
     } else if (gameState === 'go') {
-      const ms = Math.round(performance.now() - startRef.current);
+      const ms   = Math.round(performance.now() - startRef.current);
       const next = [...attempts, ms];
       setAttempts(next);
       setGameState('done');
+      playWhoosh();
       onResult(ms, next);
     }
-  }, [gameState, attempts, onResult]);
+  }, [gameState, attempts, onResult, playGo, playTooEarly, playWhoosh]);
 
   const cfg  = CONFIGS[gameState];
   const best = attempts.length ? Math.min(...attempts) : null;

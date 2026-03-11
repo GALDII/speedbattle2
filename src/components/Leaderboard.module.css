@@ -1,16 +1,211 @@
-.tabs { display:flex; background:var(--surface); border-radius:var(--radius-md); padding:4px; margin-bottom:14px; }
-.tab { flex:1; padding:9px; text-align:center; font-size:13px; font-weight:500; border-radius:9px; transition:all var(--transition); color:var(--muted); }
-.tab.active { background:var(--accent); color:#000; font-weight:600; }
-.list { display:flex; flex-direction:column; gap:8px; }
-.item { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 16px; display:flex; align-items:center; gap:14px; animation:fadeInUp 0.3s ease forwards; }
-.item.highlight { border-color:var(--accent); background:var(--accent-dim); }
-.rank { font-family:var(--font-display); font-size:26px; width:30px; flex-shrink:0; text-align:center; }
-.rank.gold   { color:#ffd700; }
-.rank.silver { color:#c0c0c0; }
-.rank.bronze { color:#cd7f32; }
-.rank.normal { color:var(--muted); }
-.info { flex:1; }
-.name { font-weight:600; font-size:15px; }
-.date { font-size:11px; color:var(--muted); margin-top:1px; }
-.score { font-family:var(--font-mono); font-size:17px; font-weight:700; color:var(--accent); }
-.unit  { font-size:11px; color:var(--muted); font-weight:400; }
+/* PLACEMENT: src/components/Leaderboard.module.css  (REPLACE existing) */
+
+/* Game tabs */
+.tabs {
+  display: flex;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 4px;
+  margin-bottom: 10px;
+}
+.tab {
+  flex: 1;
+  padding: 9px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 9px;
+  transition: all var(--transition);
+  color: var(--muted);
+}
+.tab.active {
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+/* Time tabs */
+.timeTabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.timeTab {
+  flex: 1;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  transition: all var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.timeTab.timeActive {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+.todayCount {
+  background: var(--accent);
+  color: #000;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 100px;
+  padding: 1px 6px;
+}
+
+/* Personal rank banner */
+.myRankBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  color: var(--accent);
+}
+.myRankNum {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* Podium */
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 0 4px;
+}
+.podiumItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.podiumName {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: center;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.podiumScore {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+.podiumUnit {
+  font-size: 9px;
+  color: var(--muted);
+}
+.podiumBar {
+  width: 100%;
+  border: 1px solid;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 6px;
+  transition: height 0.5s ease;
+}
+.podiumEmoji {
+  font-size: 22px;
+}
+
+/* List rows 4–10 */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: fadeInUp 0.3s ease forwards;
+}
+.item.you {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+.rank {
+  font-family: var(--font-display);
+  font-size: 18px;
+  width: 28px;
+  flex-shrink: 0;
+  text-align: center;
+  color: var(--muted);
+}
+.r1 {
+  color: #ffd700;
+}
+.r2 {
+  color: #c0c0c0;
+}
+.r3 {
+  color: #cd7f32;
+}
+.info {
+  flex: 1;
+}
+.name {
+  font-weight: 600;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.youBadge {
+  background: var(--accent);
+  color: #000;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 100px;
+  padding: 1px 7px;
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+}
+.date {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.score {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.unit {
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.empty {
+  text-align: center;
+  padding: 32px 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-family: var(--font-mono);
+}
