@@ -1,3 +1,8 @@
+// ─── TypingResult.jsx ─────────────────────────────────────────
+// PLACEMENT: src/pages/TypingResult.jsx  (REPLACE existing)
+// Ad placement: ONE 'result' block at very bottom, AFTER all content.
+// User sees score → share → leaderboard → THEN ad. Never interrupts flow.
+
 import React, { useRef, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ResultCard from '../components/ResultCard';
@@ -45,36 +50,26 @@ export default function TypingResult({ result, onSubmit, showToast }) {
 
       <button className={styles.back} onClick={() => navigate('/typing')}>← Play Again</button>
 
-      <ResultCard
-        score={wpm}
-        unit="words per minute"
-        rank={rank}
-        extra={`Accuracy: ${acc}% | Time: ${time}s`}
-      />
+      {/* Score is the hero — full attention, no ads nearby */}
+      <ResultCard score={wpm} unit="words per minute" rank={rank} extra={`Accuracy: ${acc}% | Time: ${time}s`} />
 
       {/* Quick action chips */}
       <div className={styles.chipRow}>
-        <span className={styles.chip} onClick={() => setModalOpen(true)}>🔗 Share</span>
+        <span className={styles.chip} onClick={() => setModalOpen(true)}>🔗 Share & Challenge</span>
         <span className={styles.chip} onClick={handleDownload}>⬇️ Save Card</span>
         <span className={styles.chip} onClick={() => navigate('/typing')}>⌨️ Try Again</span>
         <span className={styles.chip} onClick={() => navigate('/leaderboard')}>🏆 Scores</span>
       </div>
 
-      <AdSlot size="bottom" />
+      {/* Ad LAST — after user has already engaged with all content */}
+      <AdSlot size="result" />
 
       <ScoreModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleModalSubmit}
         showToast={showToast}
-        scoreData={{
-          type: 'typing',
-          score: wpm,
-          rank,
-          acc,
-          time,
-          percentile,
-        }}
+        scoreData={{ type: 'typing', score: wpm, rank, acc, time, percentile }}
       />
     </div>
   );

@@ -1,60 +1,113 @@
-/* Ad wrapper — full width, no side margins on mobile */
+/* ── AdSlot.module.css ────────────────────────────────────────
+   PLACEMENT: src/components/AdSlot.module.css  (REPLACE existing)
+*/
+
+/* ── Shared wrapper ─────────────────────────────────────────── */
 .adWrapper {
   width: 100%;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
 }
 
-/* Dev placeholder */
-.adSlot {
-  background: var(--surface);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-sm);
+/* ── STICKY BOTTOM BANNER ────────────────────────────────────
+   Lives in App.jsx outside all routes.
+   Sits above BottomNav using bottom padding on pages.
+   Never overlaps game content — it's below the nav safe zone.
+   Height collapses to 0 if no ad fills.
+*/
+.banner {
+  position: fixed;
+  bottom: 56px; /* sits just above the 56px BottomNav */
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(10, 10, 10, 0.95);
+  border-top: 1px solid #1f1f1f;
+  min-height: 0; /* collapses when unfilled */
+  max-height: 60px;
+  backdrop-filter: blur(4px);
+}
+
+/* Push page content up so sticky banner never covers it */
+:global(body) {
+  padding-bottom: 116px; /* 56px nav + 60px banner */
+}
+
+/* ── BETWEEN BLOCK ───────────────────────────────────────────
+   Used on: Home (below game cards), Leaderboard (below list)
+   A natural content break — like a magazine ad between sections.
+   Never appears on active game pages.
+*/
+.between {
+  margin: 20px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #1f1f1f;
+  min-height: 0;
+  background: #0d0d0d;
+}
+
+/* ── RESULT BLOCK ────────────────────────────────────────────
+   Used on: TypingResult, ReactionResult only.
+   Shown AFTER the result card and share buttons — below the fold.
+   User has already seen their score, so ad doesn't disrupt anything.
+*/
+.result {
+  margin: 24px 0 8px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #1f1f1f;
+  min-height: 0;
+  background: #0d0d0d;
+}
+
+/* ── Dev placeholders ────────────────────────────────────────── */
+.placeholder {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--muted);
+  background: #111;
+  border: 1px dashed #2a2a2a;
+  border-radius: 10px;
+  color: #333;
   font-size: 10px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-family: var(--font-mono);
+  font-family: "Space Mono", monospace;
   width: 100%;
 }
-
-/* Banner — below header, sticky feel */
-.banner {
-  height: 60px;
-  min-height: 50px;
+.placeholder.banner {
+  height: 50px;
+  position: fixed;
+  bottom: 56px;
+  left: 0;
+  right: 0;
+  border-radius: 0;
+}
+.placeholder.between {
+  height: 90px;
+  margin: 20px 0;
+}
+.placeholder.result {
+  height: 100px;
+  margin: 24px 0 8px;
 }
 
-/* Mid — between game and page bottom, more room for rectangle ads */
-.mid {
-  min-height: 90px;
-  margin: 12px 0;
-  border-radius: var(--radius-md);
-  border: 1px dashed var(--border);
-}
-
-/* Bottom — result pages footer */
-.bottom {
-  min-height: 60px;
-  margin: 16px 0 8px;
-}
-
-/* On larger screens give ads proper max-width */
-@media (min-width: 600px) {
-  .adWrapper {
-    max-width: 728px;
-    margin: 0 auto;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
+/* ── Desktop cap ─────────────────────────────────────────────── */
+@media (min-width: 640px) {
+  .banner {
+    max-height: 90px;
+    bottom: 0;
   }
-  .banner { height: 90px; }
-  .mid    { min-height: 250px; }
-  .bottom { min-height: 90px; }
+  :global(body) {
+    padding-bottom: 90px;
+  }
+  .between,
+  .result {
+    max-width: 728px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }

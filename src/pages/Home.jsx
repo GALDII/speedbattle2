@@ -1,3 +1,7 @@
+// ─── Home.jsx ─────────────────────────────────────────────────
+// PLACEMENT: src/pages/Home.jsx  (REPLACE existing)
+// Ad placement: ONE 'between' block after the game cards — natural break.
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import AdSlot from '../components/AdSlot';
@@ -30,6 +34,9 @@ export default function Home({ stats }) {
         ))}
       </div>
 
+      {/* Ad sits naturally between game cards and leaderboard button */}
+      <AdSlot size="between" />
+
       <button className={styles.lbBtn} onClick={() => navigate('/leaderboard')}>
         <span>🏆 &nbsp; View Leaderboard</span>
         <span className={styles.arrow}>›</span>
@@ -44,7 +51,6 @@ export default function Home({ stats }) {
           </div>
         ))}
       </div>
-      <AdSlot size="bottom" />
     </div>
   );
 }

@@ -1,3 +1,6 @@
+// ─── ReactionResult.jsx ───────────────────────────────────────
+// PLACEMENT: src/pages/ReactionResult.jsx  (REPLACE existing)
+
 import React, { useRef, useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ResultCard from '../components/ResultCard';
@@ -42,34 +45,26 @@ export default function ReactionResult({ score, onSubmit, showToast }) {
 
       <button className={styles.back} onClick={() => navigate('/reaction')}>← Play Again</button>
 
-      <ResultCard
-        score={score}
-        unit="milliseconds"
-        rank={rank}
-        extra={`Faster than ${percentile}% of players`}
-      />
+      {/* Score hero — full attention */}
+      <ResultCard score={score} unit="milliseconds" rank={rank} extra={`Faster than ${percentile}% of players`} />
 
-      {/* Quick action chips */}
+      {/* Actions */}
       <div className={styles.chipRow}>
-        <span className={styles.chip} onClick={() => setModalOpen(true)}>🔗 Share</span>
+        <span className={styles.chip} onClick={() => setModalOpen(true)}>🔗 Share & Challenge</span>
         <span className={styles.chip} onClick={handleDownload}>⬇️ Save Card</span>
         <span className={styles.chip} onClick={() => navigate('/reaction')}>⚡ Try Again</span>
         <span className={styles.chip} onClick={() => navigate('/leaderboard')}>🏆 Scores</span>
       </div>
 
-      <AdSlot size="bottom" />
+      {/* Ad at the very bottom — user has already seen everything important */}
+      <AdSlot size="result" />
 
       <ScoreModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleModalSubmit}
         showToast={showToast}
-        scoreData={{
-          type: 'reaction',
-          score,
-          rank,
-          percentile,
-        }}
+        scoreData={{ type: 'reaction', score, rank, percentile }}
       />
     </div>
   );

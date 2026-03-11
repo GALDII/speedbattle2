@@ -1,165 +1,86 @@
+// ─── AdSlot.jsx ───────────────────────────────────────────────
+// PLACEMENT: src/components/AdSlot.jsx  (REPLACE existing)
+//
+// Ad strategy:
+//   'banner'    → sticky bottom bar (never covers game, always visible)
+//   'between'   → shown ONLY on Home, Leaderboard, Result pages (never on game pages)
+//   'result'    → large block on result pages only, below the fold
+//
+// Game pages (ReactionPage, TypingPage) have ZERO ads inside them.
+// The sticky bottom banner covers all pages passively without disrupting play.
+
 import React, { useEffect, useRef } from 'react';
 import styles from './AdSlot.module.css';
 
-// ─── AD CREDENTIALS ───────────────────────────────────────────
 const AD_CONFIG = {
   adsense: {
     publisherId: 'ca-pub-5890583628637719',
     slots: {
-      banner: '5274180112',
-      mid:    '8554949577',
-      bottom: '9022183004',
+      banner:  '5274180112',
+      between: '8554949577',
+      result:  '9022183004',
     },
   },
-  adsterra: {
-    banner: '//pl28890016.effectivegatecpm.com/21f569c24724fe31451b5d45f16d243b/invoke.js',
-    mid:    '//pl28890016.effectivegatecpm.com/21f569c24724fe31451b5d45f16d243b/invoke.js',
-    bottom: '//pl28890016.effectivegatecpm.com/21f569c24724fe31451b5d45f16d243b/invoke.js',
-  },
-  monetag: {
-    banner: '10710139',
-    mid:    '10710324',
-    bottom: '10710320',
-  },
 };
-// ──────────────────────────────────────────────────────────────
 
 const IS_PROD = process.env.REACT_APP_ENV === 'production';
 
-// banner → AdSense   (below header, every page)
-// mid    → Adsterra  (below game area, during play)
-// bottom → Monetag   (bottom of result pages)
-const SLOT_NETWORK = {
-  banner: 'adsense',
-  mid:    'adsterra',
-  bottom: 'monetag',
-};
-
-// ── Register Monetag service worker once ──────────────────────
+// Register Monetag service worker (popunder — background only, never visible)
 if (IS_PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .catch((err) => console.warn('Monetag SW registration failed:', err));
+    navigator.serviceWorker.register('/sw.js')
+      .catch(err => console.warn('Monetag SW:', err));
   });
 }
 
-// ── AdSense Unit ──────────────────────────────────────────────
-function AdSenseUnit({ slotId }) {
+function AdSenseUnit({ slotId, format = 'auto' }) {
+  const wrapRef = useRef(null);
+
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.warn('AdSense error:', e);
-    }
+    } catch (e) {}
+
+    // Hide wrapper if AdSense returns no fill (prevents empty gaps)
+    const t = setTimeout(() => {
+      const ins = wrapRef.current?.querySelector('ins');
+      if (ins?.getAttribute('data-ad-status') === 'unfilled') {
+        if (wrapRef.current) wrapRef.current.style.display = 'none';
+      }
+    }, 2500);
+    return () => clearTimeout(t);
   }, []);
 
   return (
-    <ins
-      className="adsbygoogle"
-      style={{ display: 'block', width: '100%' }}
-      data-ad-client={AD_CONFIG.adsense.publisherId}
-      data-ad-slot={slotId}
-      data-ad-format="auto"
-      data-full-width-responsive="true"
-    />
-  );
-}
-
-// ── Adsterra Unit ─────────────────────────────────────────────
-function AdsterraUnit({ scriptSrc }) {
-  const ref = useRef(null);
-  const containerId = scriptSrc.split('/').slice(-2, -1)[0];
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    if (element.querySelector('script')) return;
-
-    const script = document.createElement('script');
-    script.src = `https:${scriptSrc}`;
-    script.async = true;
-    script.setAttribute('data-cfasync', 'false');
-    element.appendChild(script);
-
-    return () => { if (element) element.innerHTML = ''; };
-  }, [scriptSrc]);
-
-  return (
-    <div ref={ref} style={{ width: '100%' }}>
-      <div id={`container-${containerId}`} />
+    <div ref={wrapRef}>
+      <ins
+        className="adsbygoogle"
+        style={{ display: 'block', width: '100%' }}
+        data-ad-client={AD_CONFIG.adsense.publisherId}
+        data-ad-slot={slotId}
+        data-ad-format={format}
+        data-full-width-responsive="true"
+      />
     </div>
   );
 }
 
-// ── Monetag Unit ──────────────────────────────────────────────
-// Uses Monetag's direct tag format — get your exact script URL from
-// publishers.monetag.com → Sites → your zone → Get Tag
-function MonetagUnit({ zoneId }) {
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-    if (element.querySelector('script')) return;
-
-    // Monetag tag script — format: //{pub-domain}/400/{zoneId}
-    // Replace 'YOUR_MONETAG_CDN' with the domain from your Monetag tag
-    const script = document.createElement('script');
-    script.async = true;
-    script.setAttribute('data-cfasync', 'false');
-    // ↓ Get this URL from your Monetag dashboard "Get Tag" button
-    script.src = `//monetag.com/banner/${zoneId}`;
-    element.appendChild(script);
-
-    return () => { if (element) element.innerHTML = ''; };
-  }, [zoneId]);
-
-  return <div ref={ref} style={{ width: '100%', minHeight: 60 }} />;
-}
-
-// ── Placeholder (dev / unconfigured) ─────────────────────────
 function Placeholder({ size }) {
   return (
-    <div className={`${styles.adSlot} ${styles[size]}`}>
-      Advertisement
+    <div className={`${styles.placeholder} ${styles[size]}`}>
+      Ad · {size}
     </div>
   );
 }
 
-// ── Main AdSlot component ─────────────────────────────────────
-export default function AdSlot({ size = 'banner' }) {
-  const network = SLOT_NETWORK[size];
-
-  if (!IS_PROD) {
-    return <Placeholder size={size} />;
-  }
-
-  if (network === 'adsense') {
-    return (
-      <div className={styles.adWrapper}>
-        <AdSenseUnit slotId={AD_CONFIG.adsense.slots[size]} />
-      </div>
-    );
-  }
-
-  if (network === 'adsterra') {
-    const src = AD_CONFIG.adsterra[size];
-    if (!src.includes('effectivegatecpm')) return <Placeholder size={size} />;
-    return (
-      <div className={styles.adWrapper}>
-        <AdsterraUnit scriptSrc={src} />
-      </div>
-    );
-  }
-
-  if (network === 'monetag') {
-    return (
-      <div className={styles.adWrapper}>
-        <MonetagUnit zoneId={AD_CONFIG.monetag[size]} />
-      </div>
-    );
-  }
-
-  return <Placeholder size={size} />;
+export default function AdSlot({ size = 'between' }) {
+  if (!IS_PROD) return <Placeholder size={size} />;
+  return (
+    <div className={`${styles.adWrapper} ${styles[size]}`}>
+      <AdSenseUnit
+        slotId={AD_CONFIG.adsense.slots[size] || AD_CONFIG.adsense.slots.between}
+        format={size === 'banner' ? 'horizontal' : 'auto'}
+      />
+    </div>
+  );
 }
