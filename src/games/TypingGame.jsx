@@ -1,6 +1,9 @@
 // ─── TypingGame.jsx ───────────────────────────────────────────
-// PLACEMENT: src/games/TypingGame.jsx  (REPLACE existing)
-// Adds: sound effects on correct/wrong letter, word complete, game end
+// Typing speed test with anti-cheat:
+//   - Space-spamming is blocked (empty input = space ignored)
+//   - WPM is calculated from CORRECTLY typed characters, not just word count
+//   - Accuracy must be >0% for a valid result
+//   - Character-level accuracy tracking
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { getRandomWords } from '../data/words';
@@ -16,23 +19,39 @@ export default function TypingGame({ onResult }) {
   const [elapsed, setElapsed]       = useState(0);
   const [liveWpm, setLiveWpm]       = useState(0);
   const [liveAcc, setLiveAcc]       = useState(100);
+  const [wordResults, setWordResults] = useState([]);  // tracks each word: { word, typed, correct }
 
   const startTimeRef  = useRef(null);
   const timerRef      = useRef(null);
   const inputRef      = useRef(null);
   const wordIndexRef  = useRef(0);
-  const errorsRef     = useRef(0);
-  const prevInputRef  = useRef('');
+  const totalCharsRef = useRef(0);   // total characters in correct words
+  const correctCharsRef = useRef(0); // correctly typed characters
+  const wordResultsRef  = useRef([]); // mirror of wordResults for ref access
 
   const { playClick, playError, playCorrectWord, playWhoosh } = useSound();
 
-  const finish = useCallback((finalIndex, finalErrors, finalElapsed) => {
+  const finish = useCallback((results, finalElapsed) => {
     clearInterval(timerRef.current);
     playWhoosh();
+
     const secs = finalElapsed / 1000;
-    const wpm  = Math.round((finalIndex / Math.max(secs, 0.1)) * 60);
-    const acc  = Math.max(0, Math.round(((finalIndex - finalErrors) / Math.max(finalIndex, 1)) * 100));
-    onResult({ wpm, acc, time: secs.toFixed(1) });
+    const totalWords = results.length;
+    const correctWords = results.filter(r => r.correct).length;
+
+    // Calculate WPM based on correctly typed characters
+    // Standard: 1 word = 5 characters (typing test standard)
+    const correctCharCount = results
+      .filter(r => r.correct)
+      .reduce((sum, r) => sum + r.word.length, 0);
+
+    // Net WPM: (correct characters / 5) / time in minutes
+    const netWpm = Math.max(0, Math.round((correctCharCount / 5) / Math.max(secs / 60, 0.01)));
+
+    // Accuracy: percentage of words typed correctly
+    const acc = Math.max(0, Math.round((correctWords / Math.max(totalWords, 1)) * 100));
+
+    onResult({ wpm: netWpm, acc, time: secs.toFixed(1) });
   }, [onResult, playWhoosh]);
 
   useEffect(() => () => clearInterval(timerRef.current), []);
@@ -45,38 +64,63 @@ export default function TypingGame({ onResult }) {
       const e = Math.round(performance.now() - startTimeRef.current);
       setElapsed(e);
       const secs = e / 1000;
-      setLiveWpm(secs > 0 ? Math.round((wordIndexRef.current / secs) * 60) : 0);
+      // Live WPM based on correct chars so far
+      const liveNetWpm = secs > 0
+        ? Math.round((correctCharsRef.current / 5) / (secs / 60))
+        : 0;
+      setLiveWpm(liveNetWpm);
     }, 100);
   };
 
   const handleInput = (e) => {
     if (!started || done) return;
     const val  = e.target.value;
-    const prev = prevInputRef.current;
-    prevInputRef.current = val;
 
     if (val.endsWith(' ')) {
-      const typed   = val.trim();
-      const correct = typed === words[wordIndexRef.current];
-      if (!correct) errorsRef.current += 1;
+      const typed = val.trim();
 
-      playCorrectWord();
+      // ═══ ANTI-CHEAT: Block empty space presses ═══
+      // User must type at least 1 character before space advances the word
+      if (typed.length === 0) {
+        // Just clear and ignore — don't advance
+        setCurrentInput('');
+        return;
+      }
+
+      const targetWord = words[wordIndexRef.current];
+      const isCorrect = typed === targetWord;
+
+      // Track character accuracy
+      totalCharsRef.current += targetWord.length;
+      if (isCorrect) {
+        correctCharsRef.current += targetWord.length;
+        playCorrectWord();
+      } else {
+        playError();
+      }
+
+      const result = { word: targetWord, typed, correct: isCorrect };
+      const newResults = [...wordResultsRef.current, result];
+      wordResultsRef.current = newResults;
+      setWordResults(newResults);
 
       const newIndex = wordIndexRef.current + 1;
       wordIndexRef.current = newIndex;
       setWordIndex(newIndex);
       setCurrentInput('');
-      prevInputRef.current = '';
-      setLiveAcc(Math.max(0, Math.round(((newIndex - errorsRef.current) / Math.max(newIndex, 1)) * 100)));
+
+      // Update live accuracy
+      const correctCount = newResults.filter(r => r.correct).length;
+      setLiveAcc(Math.max(0, Math.round((correctCount / newResults.length) * 100)));
 
       if (newIndex >= words.length) {
         setDone(true);
         const finalElapsed = Math.round(performance.now() - startTimeRef.current);
-        finish(newIndex, errorsRef.current, finalElapsed);
+        finish(newResults, finalElapsed);
       }
     } else {
-      // Sound on each new character typed
-      if (val.length > prev.length) {
+      // Character-level feedback
+      if (val.length > currentInput.length) {
         const currentWord = words[wordIndexRef.current];
         const isCorrectSoFar = currentWord.startsWith(val);
         if (isCorrectSoFar) {
@@ -90,7 +134,10 @@ export default function TypingGame({ onResult }) {
   };
 
   const getWordClass = (i) => {
-    if (i < wordIndex) return styles.correct;
+    if (i < wordIndex) {
+      // Show green for correctly typed, red for incorrectly typed
+      return wordResults[i]?.correct ? styles.correct : styles.wrong;
+    }
     if (i === wordIndex) {
       if (currentInput && !words[i].startsWith(currentInput)) return styles.wrong;
       return styles.current;
@@ -101,13 +148,25 @@ export default function TypingGame({ onResult }) {
   return (
     <div>
       <div className={styles.timerBarWrap}>
-        <div className={styles.timerBar} style={{ width: started ? '100%' : '100%' }} />
+        <div
+          className={styles.timerBar}
+          style={{ width: started ? `${Math.min((wordIndex / words.length) * 100, 100)}%` : '0%' }}
+        />
       </div>
 
       <div className={styles.statsLive}>
-        <div className={styles.statLive}><div className={styles.statVal}>{liveWpm}</div><div className={styles.statLbl}>WPM</div></div>
-        <div className={styles.statLive}><div className={styles.statVal}>{liveAcc}%</div><div className={styles.statLbl}>Accuracy</div></div>
-        <div className={styles.statLive}><div className={styles.statVal}>{(elapsed / 1000).toFixed(1)}s</div><div className={styles.statLbl}>Time</div></div>
+        <div className={styles.statLive}>
+          <div className={styles.statVal}>{liveWpm}</div>
+          <div className={styles.statLbl}>WPM</div>
+        </div>
+        <div className={styles.statLive}>
+          <div className={styles.statVal}>{liveAcc}%</div>
+          <div className={styles.statLbl}>Accuracy</div>
+        </div>
+        <div className={styles.statLive}>
+          <div className={styles.statVal}>{(elapsed / 1000).toFixed(1)}s</div>
+          <div className={styles.statLbl}>Time</div>
+        </div>
       </div>
 
       <div className={styles.wordDisplay}>

@@ -1,6 +1,7 @@
 // ─── ReactionGame.jsx ─────────────────────────────────────────
-// PLACEMENT: src/games/ReactionGame.jsx  (REPLACE existing)
-// Adds: sound on GO, too-early penalty sound, whoosh on result
+// Reaction speed test with multiple attempts.
+// User can retry infinite times. Best score is sent to result page.
+// Stats row only shows after first successful attempt.
 
 import React, { useState, useRef, useCallback } from 'react';
 import { useSound } from '../hooks/useSound';
@@ -40,7 +41,9 @@ export default function ReactionGame({ onResult }) {
       setAttempts(next);
       setGameState('done');
       playWhoosh();
-      onResult(ms, next);
+      // Send best score (lowest ms) to result handler
+      const bestMs = Math.min(...next);
+      onResult(bestMs, next);
     }
   }, [gameState, attempts, onResult, playGo, playTooEarly, playWhoosh]);
 
@@ -57,25 +60,39 @@ export default function ReactionGame({ onResult }) {
       >
         {gameState === 'go' && <div className={styles.pulse} />}
         <div className={styles.title} style={{ color: cfg.color }}>
-          {gameState === 'done' && best ? `${attempts[attempts.length - 1]} ms` : cfg.title}
+          {gameState === 'done' && best !== null ? `${attempts[attempts.length - 1]} ms` : cfg.title}
         </div>
         {cfg.sub && <div className={styles.sub}>{cfg.sub}</div>}
       </div>
 
-      <div className={styles.statsRow}>
-        <div className={styles.stat}>
-          <div className={styles.val}>{attempts.length}</div>
-          <div className={styles.lbl}>Attempts</div>
+      {/* Only show stats after at least one successful attempt */}
+      {attempts.length > 0 && (
+        <div className={styles.statsRow}>
+          <div className={styles.stat}>
+            <div className={styles.val}>{attempts.length}</div>
+            <div className={styles.lbl}>{attempts.length === 1 ? 'Attempt' : 'Attempts'}</div>
+          </div>
+          <div className={styles.stat}>
+            <div className={styles.val}>{best}</div>
+            <div className={styles.lbl}>Best (ms)</div>
+          </div>
+          <div className={styles.stat}>
+            <div className={styles.val}>{avg}</div>
+            <div className={styles.lbl}>Avg (ms)</div>
+          </div>
         </div>
-        <div className={styles.stat}>
-          <div className={styles.val}>{best ?? '—'}</div>
-          <div className={styles.lbl}>Best (ms)</div>
+      )}
+
+      {/* Show instruction when no attempts yet */}
+      {attempts.length === 0 && gameState === 'idle' && (
+        <div className={styles.statsRow}>
+          <div className={styles.stat} style={{ gridColumn: '1 / -1' }}>
+            <div className={styles.lbl} style={{ fontSize: '12px' }}>
+              Tap the arena above to start. React as fast as you can when it turns green!
+            </div>
+          </div>
         </div>
-        <div className={styles.stat}>
-          <div className={styles.val}>{avg ?? '—'}</div>
-          <div className={styles.lbl}>Avg (ms)</div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

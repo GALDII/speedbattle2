@@ -34,6 +34,23 @@ export function useLeaderboard() {
   }
 
   const addScore = useCallback(async (type, name, score, extra = {}) => {
+    // ═══ Anti-cheat validation ═══
+    if (type === 'typing') {
+      const acc = extra.accuracy ?? 0;
+      // Reject: accuracy below 30% (spam) or WPM above 250 (humanly impossible)
+      if (acc < 30 || score > 250 || score <= 0) {
+        console.warn('Score rejected: suspicious typing result', { score, acc });
+        return -1;
+      }
+    }
+    if (type === 'reaction') {
+      // Reject: faster than 100ms (humanly impossible)
+      if (score < 100 || score > 5000) {
+        console.warn('Score rejected: suspicious reaction result', { score });
+        return -1;
+      }
+    }
+
     const table = type === 'reaction' ? 'reaction_scores' : 'typing_scores';
 
     const { data, error } = await supabase

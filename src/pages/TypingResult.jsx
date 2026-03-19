@@ -1,5 +1,4 @@
 // ─── TypingResult.jsx ─────────────────────────────────────────
-// PLACEMENT: src/pages/TypingResult.jsx  (REPLACE existing)
 // Ad placement: ONE 'result' block at very bottom, AFTER all content.
 // User sees score → share → leaderboard → THEN ad. Never interrupts flow.
 
@@ -22,8 +21,8 @@ export default function TypingResult({ result, onSubmit, showToast }) {
   const wpm        = result?.wpm ?? 0;
   const acc        = result?.acc ?? 0;
   const time       = result?.time ?? '0';
-  const rank       = getTypingRank(wpm);
-  const percentile = getTypingPercentile(wpm);
+  const rank       = getTypingRank(wpm, acc);      // ← now passes accuracy
+  const percentile = getTypingPercentile(wpm, acc); // ← now passes accuracy
 
   const handleModalSubmit = async (playerName) => {
     const pos = await onSubmit('typing', playerName, wpm, { accuracy: acc });
@@ -45,7 +44,7 @@ export default function TypingResult({ result, onSubmit, showToast }) {
 
   return (
     <div className={styles.page}>
-      <Confetti trigger={wpm >= 60} />
+      <Confetti trigger={wpm >= 60 && acc >= 80} />
       <canvas ref={canvasRef} style={{ display: 'none' }} />
 
       <button className={styles.back} onClick={() => navigate('/typing')}>← Play Again</button>
