@@ -1,0 +1,88 @@
+/* ─── Footer.module.css ─────────────────────────────────────── */
+
+.footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 28px 20px 90px;
+  margin-top: 20px;
+}
+
+.brand { margin-bottom: 20px; }
+.logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--orange) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.tagline {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 6px;
+  max-width: 300px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.colTitle {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.link {
+  display: block;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 11px;
+  font-family: var(--font-body);
+  padding: 3px 0;
+  cursor: pointer;
+  text-align: left;
+  transition: color var(--transition);
+}
+.link:hover,
+.link:active { color: var(--text); }
+
+.bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.copy {
+  font-size: 10px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+.bottomLinks {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bottomLink {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 10px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  padding: 0;
+  transition: color var(--transition);
+}
+.bottomLink:hover,
+.bottomLink:active { color: var(--text); }
+.sep { color: var(--border); font-size: 10px; }

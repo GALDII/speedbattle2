@@ -1,5 +1,5 @@
 // ─── App.jsx ──────────────────────────────────────────────────
-// PLACEMENT: src/App.jsx  (REPLACE existing)
+// Main app with all routes including content pages for AdSense approval
 //
 // Ad strategy:
 //   - Sticky banner lives HERE, outside all routes, fixed above BottomNav
@@ -7,11 +7,12 @@
 //   - Game pages have zero ads inside them
 //   - Result/Home/Leaderboard pages each have one non-intrusive block
 
-import React, { useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 import Header      from './components/Header';
 import BottomNav   from './components/BottomNav';
+import Footer      from './components/Footer';
 import Toast       from './components/Toast';
 import AdSlot      from './components/AdSlot';
 
@@ -23,9 +24,24 @@ import TypingResult    from './pages/TypingResult';
 import LeaderboardPage from './pages/LeaderboardPage';
 import ChallengePage   from './pages/ChallengePage';
 
+// Content pages for AdSense approval
+import AboutPage    from './pages/AboutPage';
+import PrivacyPage  from './pages/PrivacyPage';
+import TermsPage    from './pages/TermsPage';
+import ContactPage  from './pages/ContactPage';
+import BlogList     from './pages/BlogList';
+import BlogPost     from './pages/BlogPost';
+
 import { useLeaderboard } from './hooks/useLeaderboard';
 import { useToast }       from './hooks/useToast';
 import { useLivePlayers } from './hooks/useLivePlayers';
+
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 
 export default function App() {
   const [reactionScore, setReactionScore] = useState(null);
@@ -51,6 +67,7 @@ export default function App() {
 
   return (
     <>
+      <ScrollToTop />
       <Header liveCount={liveCount} />
 
       {/* ── Sticky banner ad — sits above BottomNav on all pages ──
@@ -72,8 +89,17 @@ export default function App() {
         <Route path="/leaderboard"    element={
           <LeaderboardPage reactionBoard={reactionBoard} typingBoard={typingBoard} myScore={myScore} />
         } />
+
+        {/* Content pages — high-quality unique content for AdSense */}
+        <Route path="/about"     element={<AboutPage />} />
+        <Route path="/privacy"   element={<PrivacyPage />} />
+        <Route path="/terms"     element={<TermsPage />} />
+        <Route path="/contact"   element={<ContactPage />} />
+        <Route path="/blog"      element={<BlogList />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
       </Routes>
 
+      <Footer />
       <BottomNav />
       <Toast message={toast.message} visible={toast.visible} />
     </>
